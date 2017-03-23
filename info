@@ -1,0 +1,19 @@
+remove 14th atrribute
+remove 22-27 attribute
+classes=
+	   01             Normal				          			   245
+       02             Ischemic changes (Coronary Artery Disease)   44
+       03             Old Anterior Myocardial Infarction           15
+       04             Old Inferior Myocardial Infarction           15
+       05             Sinus tachycardy			          		   13
+       06             Sinus bradycardy			                   25
+       07             Ventricular Premature Contraction (PVC)       3
+       08             Supraventricular Premature Contraction	    2
+       09             Left bundle branch block 		            	9	
+       10             Right bundle branch block		           		50
+       //14             Left ventricule hypertrophy 	            	4
+       15             Atrial Fibrillation or Flutter	            5
+       16             Others				           				22
+
+
+tachycardia- skipping beats
