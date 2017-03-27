@@ -112,6 +112,11 @@ for i in range(0,452):
 		print val
 		X[i][12]=(val).astype(numpy.int)
 		print X[i][12]
+#reduce number of classes
+for i in range(0,452):
+	if (y[i]>=14):
+		y[i]=y[i]-3
 
-numpy.savetxt("output.csv", numpy.c_[X,y], fmt='%s', delimiter=",")
+numpy.savetxt("feature.csv", X, fmt='%s', delimiter=",")
+numpy.savetxt("target_output.csv", y, fmt='%s', delimiter=",")
 #result=numpy.array(x).astype("str")
