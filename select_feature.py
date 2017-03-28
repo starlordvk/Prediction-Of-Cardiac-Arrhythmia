@@ -1,9 +1,7 @@
 import csv
 import numpy
 import pandas
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import chi2
-from sklearn.decomposition import PCA
+
 from sklearn.ensemble import ExtraTreesClassifier
 
 def convert_strarr_floatarr( arr, X):
@@ -42,7 +40,7 @@ important_features=numpy.zeros((278),dtype=numpy.float)
 important_features_index=numpy.zeros((278),dtype=numpy.int)
 
 for i in range (0,278):
-	if((model.feature_importances_[i]*1000)>=1.0):
+	if((model.feature_importances_[i]*1000)>=4.1):
 		important_features[c]=model.feature_importances_[i]
 		important_features_index[c]=i
 		c=c+1
