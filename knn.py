@@ -14,7 +14,7 @@ def accuracy(y,pred):
 	for i in range(0,452):
 		if(y[i]==pred[i]):
 			count=count+1
-	print (count)
+	print count
 	return count*100/452
 
 #create reduced feature matrix
@@ -34,7 +34,7 @@ no_of_columns=X.shape[1]
 
 #matrix to store the mean values for each class
 mean_matrix=numpy.zeros((14,no_of_columns),dtype=numpy.float)
-print (mean_matrix.shape)
+print mean_matrix.shape
 
 class_count=numpy.zeros(14,dtype=numpy.int)
 
@@ -64,15 +64,6 @@ for i in range(0,452):
 			pred[i]=j
 			dist=temp
 
-print (pred)
-print (Y.transpose())
-print (accuracy(Y,pred))
-
-correct_class_count=numpy.zeros(14,dtype=numpy.int)
-for i in range(0,452):
-	z=numpy.asscalar(Y[i])
-	if(pred[i]==Y[i]):
-			correct_class_count[z]=correct_class_count[z]+1
-
-for i in range(1,14):
-	print ("class= ",str(i),str(correct_class_count[i]))
+print pred
+print Y.transpose()
+print accuracy(Y,pred)
