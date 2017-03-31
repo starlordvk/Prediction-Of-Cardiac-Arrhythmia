@@ -53,6 +53,7 @@ def gradient_descent(feature,Y,theta,alpha,lmbda,classifier,iters):
 	no_of_columns=feature.shape[1]
 	y= numpy.zeros(no_of_rows)
 	hypothesis_val= numpy.zeros(no_of_rows)
+	pred=numpy.zeros(no_of_rows)
 	for i in range(0,no_of_rows):
 		if(Y[i]==classifier):
 			y[i]=1
@@ -75,17 +76,17 @@ def gradient_descent(feature,Y,theta,alpha,lmbda,classifier,iters):
 				theta[j]= theta[j] - gradients[j] + lmbda/no_of_rows*theta[j]
 			else:
 				theta[j]= theta[j] - gradients[j]
-		print 'cost=' +str(lr_cost_function(feature,theta,Y,classifier,lmbda))
-		print 'iteration='+str(k)
-
-	pred=numpy.zeros(feature.shape[0])
+	if (k<10):
+			print ('iteration = '+str(k)+ ' cost=' +str(lr_cost_function(feature,theta,Y,classifier,lmbda)) + '  class='+str(classifier))
+	else:
+			print( 'iteration = '+str(k)+ '  class='+str(classifier))
 
 	for i in range(0,no_of_rows):
 		if(sigmoid(feature[i],theta) >=0.5):
 			pred[i] = 1
 		else:
 			pred[i] = 0
-	print pred
+	print (pred)
 	print(accuracy(y,pred))
 	return theta
 
@@ -108,8 +109,30 @@ Y=Y.astype(numpy.int)
 feature = numpy.ones((X.shape[0],X.shape[1]+1))
 feature[:,1:] = X
 
+no_of_classes=13
 #parameters
-theta = numpy.zeros((X.shape[1]+1))
+theta = numpy.zeros((no_of_classes+1,feature.shape[1]))
 
-print (lr_cost_function(feature,theta,Y,1,0.0) )
-print (gradient_descent(feature,Y,theta,0.00005,0.1,1,100))
+for i in range (1,no_of_classes+1):
+	gradient_descent(feature,Y,theta[i],0.00005,0.001,i,500)
+
+output= numpy.dot(feature,theta[1:].transpose())
+
+for i in range(output.shape[0]):
+	for j in range(output.shape[1]):
+		output[i][j]=1/(1+math.exp(-output[i][j]))
+
+
+# predicted values
+pred = numpy.zeros((feature.shape[0]),numpy.int)
+for i in range(feature.shape[0]):
+	index=0
+	for j in range(1,no_of_classes):
+		if(output[i][j]>output[i][index]):
+			index=j
+	pred[i]=index+1
+
+
+
+print (pred)
+print ('accuracy = ' + str(accuracy(pred,Y)))

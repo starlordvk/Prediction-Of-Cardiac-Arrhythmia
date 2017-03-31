@@ -78,7 +78,7 @@ no_of_columns=X.shape[1]
 
 
 predictions=[]
-k = 13
+k = 5	
 
 #get k nearest neighbors
 for i in range(0,452):
