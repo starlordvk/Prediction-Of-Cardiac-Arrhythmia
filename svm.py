@@ -17,9 +17,21 @@ class svm:
 		
 		pass
 
+
 	def predict(self,features):
 		classification=np.sign(np.dot(np.array(features),self.w)+b)
 		return classification
 
+#create reduced feature matrix
+reader=csv.reader(open("reduced_features.csv","r"),delimiter=",")
+X=list(reader)
+X=numpy.array(X)
+X=X.astype(numpy.float)
 
+
+#create result vector
+reader=csv.reader(open("target_output.csv","r"),delimiter=",")
+Y=list(reader)
+Y=numpy.array(Y)
+Y=Y.astype(numpy.int)
 

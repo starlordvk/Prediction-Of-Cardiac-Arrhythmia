@@ -42,7 +42,7 @@ important_features=numpy.zeros((278),dtype=numpy.float)
 important_features_index=numpy.zeros((278),dtype=numpy.int)
 
 for i in range (0,278):
-	if((model.feature_importances_[i]*1000)>=6.0):
+	if((model.feature_importances_[i]*1000)>=4.0):
 		important_features[c]=model.feature_importances_[i]
 		important_features_index[c]=i
 		c=c+1

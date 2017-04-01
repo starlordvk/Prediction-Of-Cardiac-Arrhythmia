@@ -114,7 +114,7 @@ no_of_classes=13
 theta = numpy.zeros((no_of_classes+1,feature.shape[1]))
 
 for i in range (1,no_of_classes+1):
-	gradient_descent(feature,Y,theta[i],0.00005,0.001,i,500)
+	gradient_descent(feature,Y,theta[i],0.00005,0.001,i,200)
 
 output= numpy.dot(feature,theta[1:].transpose())
 
