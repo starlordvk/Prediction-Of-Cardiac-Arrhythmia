@@ -45,21 +45,26 @@ def summarizeByClass(X,Y):
 	separated = separateByClass(X,Y)
 	summaries = {}
 	for classValue, instances in separated.items():
+		#print(len(instances))
 		summaries[classValue] = summarize(instances)
+		#print(len(summaries[classValue]))
 	return summaries		
 
 
 #calculating probability for each attribute given a class
 def calculateProbability(x, mean, stdev):
-	exponent = float(math.exp(-(math.pow(x-mean,2)/(2*math.pow(stdev,2)))))
-	return float((1 /(math.sqrt(2*math.pi) * stdev))) * exponent
-
+	try:
+		exponent = float(math.exp(-(math.pow(4-mean,2)/(2*math.pow(stdev,2)))))
+		return float((1 /(math.sqrt(2*math.pi) * stdev))) * exponent
+	except ZeroDivisionError:
+		return 0	
 
 def calculateClassProbabilities(summaries, inputVector):
 	probabilities = {}
 	for classValue, classSummaries in summaries.items():
 		probabilities[classValue] = 1
 		for i in range(len(classSummaries)):
+			#print(len(classSummaries))
 			mean, stdev = classSummaries[i]
 			x = inputVector[i]
 			probabilities[classValue] *= calculateProbability(x, mean, stdev)
@@ -68,7 +73,7 @@ def calculateClassProbabilities(summaries, inputVector):
 def predict(summaries, inputVector):
 	probabilities = calculateClassProbabilities(summaries, inputVector)
 	bestLabel, bestProb = None, -1
-	for classValue, probability in probabilities.iteritems():
+	for classValue, probability in probabilities.items():
 		if bestLabel is None or probability > bestProb:
 			bestProb = probability
 			bestLabel = classValue
@@ -106,11 +111,13 @@ summaries = summarizeByClass(X,Y)
 
 #print((summaries[2][0]))
 
-
-print(calculateProbability(4,summaries[1][0][0],summaries[1][0][1]))
+#print(calculateProbability(4,summaries[1][0][0],summaries[1][0][1]))
 #classProb=calculateClassProbabilities(summaries,X[1])
-#predictions = getPredictions(summaries,X)
-#print(accuracy(Y, predictions))
+predictions = getPredictions(summaries,X)
+print(Y)
+print(predictions)
+
+print('accuracy = ',accuracy(Y, predictions))
 
 
 
