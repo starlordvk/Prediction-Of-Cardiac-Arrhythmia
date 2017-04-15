@@ -76,17 +76,17 @@ def gradient_descent(feature,Y,theta,alpha,lmbda,classifier,iters):
 				theta[j]= theta[j] - gradients[j] + lmbda/no_of_rows*theta[j]
 			else:
 				theta[j]= theta[j] - gradients[j]
-	if (k<10):
-			print ('iteration = '+str(k)+ ' cost=' +str(lr_cost_function(feature,theta,Y,classifier,lmbda)) + '  class='+str(classifier))
-	else:
-			print( 'iteration = '+str(k)+ '  class='+str(classifier))
+		if (k<10):
+			print 'iteration = '+str(k)+ ' cost=' +str(lr_cost_function(feature,theta,Y,classifier,lmbda)) + '  class='+str(classifier)
+		else:
+			print 'iteration = '+str(k)+ '  class='+str(classifier)
 
 	for i in range(0,no_of_rows):
 		if(sigmoid(feature[i],theta) >=0.5):
 			pred[i] = 1
 		else:
 			pred[i] = 0
-	print (pred)
+	print pred
 	print(accuracy(y,pred))
 	return theta
 
@@ -114,7 +114,7 @@ no_of_classes=13
 theta = numpy.zeros((no_of_classes+1,feature.shape[1]))
 
 for i in range (1,no_of_classes+1):
-	gradient_descent(feature,Y,theta[i],0.00005,0.001,i,200)
+	gradient_descent(feature,Y,theta[i],0.00005,0.001,i,500)
 
 output= numpy.dot(feature,theta[1:].transpose())
 
@@ -134,5 +134,5 @@ for i in range(feature.shape[0]):
 
 
 
-print (pred)
+print pred
 print ('accuracy = ' + str(accuracy(pred,Y)))
