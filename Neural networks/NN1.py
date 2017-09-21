@@ -31,7 +31,26 @@ def initialize_paramteres(n_x,n_h,n_y):
 				"W2":W2,
 				"b2":b2}
 	return parameters
-				
+
+def forward_propagation	(X,paramters):
+	W1=parameters["W1"]
+	b1=parameters["b1"]
+	W2=parameters["W2"]
+	b2=parameters["b2"]
+	
+	Z1=np.dot(W1,X)+b1
+	A1=np.tanh(Z1)
+	Z2=np.dot(W2,A1)+b2
+	A2=sigmoid(Z2)
+
+	assert(A2.shape==(1,X.shape[1]))
+
+	cache={"Z1":Z1,
+			"A1":A1,
+			"Z2":Z2,
+			"A2":A2}
+	return A2,cache
+						
 
 
 reader=csv.reader(open("reduced_features.csv","r"),delimiter=",")
@@ -59,3 +78,7 @@ print("W1 = " + str(parameters["W1"]))
 print("b1 = " + str(parameters["b1"]))
 print("W2 = " + str(parameters["W2"]))
 print("b2 = " + str(parameters["b2"]))
+
+A2,cache=forward_propagation(X,parameters)
+print(A2.shape)
+print("A2 = "+str(A2))
