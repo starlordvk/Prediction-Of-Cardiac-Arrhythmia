@@ -6,7 +6,11 @@ import random
 from scipy.special import expit
 
 def sigmoid(z):
-	s=1/(1+np.exp(-z))
+	s=1.0/(1+np.exp(-z))
+	return s
+
+def softmax(z):
+	s=np.exp(z)/np.sum(np.exp(z))	
 	return s
 
 def layer_sizes(X,Y):
@@ -41,10 +45,13 @@ def forward_propagation	(X,parameters):
 	
 	Z1=np.dot(W1,X)+b1
 	A1=np.tanh(Z1)
+	#print(A1)
 	Z2=np.dot(W2,A1)+b2
-	A2=expit(Z2)
+	#print("Z2 ="+str(Z2))
+	A2=softmax(Z2)
+	#print("A2 = "+str(A2))
 
-	assert(A2.shape==(1,X.shape[1]))
+	assert(A2.shape==(13,X.shape[1]))
 
 	cache={"Z1":Z1,
 			"A1":A1,
@@ -54,9 +61,10 @@ def forward_propagation	(X,parameters):
 
 def compute_cost(A2,Y,parameters):
 	m=Y.shape[1]
-	print("A2 = "+str(A2))
+	#print("A2 = "+str(A2))
 	logprobs=(np.multiply(np.log(A2),Y)+np.multiply(np.log(1-A2),1-Y))
-	cost=-np.sum(logprobs)/m
+	#print(logprobs)
+	cost=-1*np.sum(logprobs)/m
 
 	cost=float(cost)
 	assert(isinstance(cost,float))
@@ -128,7 +136,7 @@ def nn_model(X,Y,n_h,num_iterations=1000, print_cost=False):
 		#print("A2 = "+str(A2))
 		cost =compute_cost(A2,Y,parameters)
 		grads=backward_propagation(parameters,cache,X,Y)
-		parameters=update_paramters(parameters,grads,1.2)
+		parameters=update_paramters(parameters,grads,0.001)
 		if print_cost and i%100==0:
 			print("Cost afetr iteration %i:%f" %(i,cost))
 
@@ -160,13 +168,26 @@ reader=csv.reader(open("target_output.csv","r"),delimiter=",")
 Y=list(reader)
 Y=np.array(Y)
 Y=Y.astype(np.int)
+
 Y=np.transpose(Y)
 
+one_hot_encoded=list()
+for value in range (0,Y.shape[1]):
+	out=list()
+	out=[0 for i in range(13)]
+	out[Y[0][value]-1]=1
+	one_hot_encoded.append(out)
+
+
+Y=one_hot_encoded
+Y=np.array(Y)
+Y=np.transpose(Y)
+print(Y)
 
 print("shape of x ="+str(X.shape))
 print("shape of y ="+str(Y.shape))
 
-parameters = nn_model(X, Y, 4, num_iterations=10, print_cost=False)
+parameters = nn_model(X, Y, 4, num_iterations=1000, print_cost=True)
 print("W1 = " + str(parameters["W1"]))
 print("b1 = " + str(parameters["b1"]))
 print("W2 = " + str(parameters["W2"]))
