@@ -5,21 +5,24 @@ import operator
 import random
 from scipy.special import expit
 
+#sigmoid function definition
 def sigmoid(z):
 	s=1.0/(1+np.exp(-z))
 	return s
 
+#softmax function for multiclass classification
 def softmax(z):
-	s=np.exp(z)/np.sum(np.exp(z))	
+	s=np.exp(z)/np.sum(np.exp(z),axis=0)	
 	return s
 
+#initializing the layer sizes, assuming the hidden layer has 4 units
 def layer_sizes(X,Y):
 	n_x	= X.shape[0]
 	n_y = Y.shape[0]
 	n_h = 4
 	return (n_x,n_h,n_y)
 
-
+#initializing weights and biases for layer 1 and layer 2
 def initialize_paramteres(n_x,n_h,n_y):
 	W1=np.random.randn(n_h,n_x)*0.01
 	b1=np.zeros((n_h,1))
@@ -37,6 +40,7 @@ def initialize_paramteres(n_x,n_h,n_y):
 				"b2":b2}
 	return parameters
 
+#forward propagation to compute activation values. 13 is the number of classes 
 def forward_propagation	(X,parameters):
 	W1=parameters["W1"]
 	b1=parameters["b1"]
@@ -45,11 +49,8 @@ def forward_propagation	(X,parameters):
 	
 	Z1=np.dot(W1,X)+b1
 	A1=np.tanh(Z1)
-	#print(A1)
 	Z2=np.dot(W2,A1)+b2
-	#print("Z2 ="+str(Z2))
 	A2=softmax(Z2)
-	#print("A2 = "+str(A2))
 
 	assert(A2.shape==(13,X.shape[1]))
 
@@ -59,19 +60,17 @@ def forward_propagation	(X,parameters):
 			"A2":A2}
 	return A2,cache
 
+#computes cost based on softmax function
 def compute_cost(A2,Y,parameters):
 	m=Y.shape[1]
-	#print("A2 = "+str(A2))
-	logprobs=(np.multiply(np.log(A2),Y)+np.multiply(np.log(1-A2),1-Y))
-	#print(logprobs)
-	cost=-1*np.sum(logprobs)/m
-
+	logprobs=(np.multiply(np.log(A2),Y))
+	cost=-np.sum(logprobs)/m
 	cost=float(cost)
 	assert(isinstance(cost,float))
 
 	return cost
 						
-
+#computes gradients for learning
 def backward_propagation(parameters,cache,X,Y):
 	m=X.shape[1]
 	W1=parameters["W1"]
@@ -93,6 +92,7 @@ def backward_propagation(parameters,cache,X,Y):
 		   "db2":db2}	
 	return grads
 
+#update parameters based on learning rate and gradients dW and db
 def update_paramters(parameters,grads,learning_rate):
 	W1=parameters["W1"]
 	b1=parameters["b1"]
@@ -115,7 +115,7 @@ def update_paramters(parameters,grads,learning_rate):
 				"b2":b2}
 	return parameters
 
-
+#model for NN
 def nn_model(X,Y,n_h,num_iterations=1000, print_cost=False):
 	n_x,n_h,n_y=layer_sizes(X,Y)
 	print("size of imput layer is n_x ="+str(n_x))
@@ -123,38 +123,31 @@ def nn_model(X,Y,n_h,num_iterations=1000, print_cost=False):
 	print("size of output layer is n_y ="+str(n_y))
 
 	parameters= initialize_paramteres(n_x,n_h,n_y)
+	'''
 	print("W1 = " + str(parameters["W1"]))
 	print("b1 = " + str(parameters["b1"]))
 	print("W2 = " + str(parameters["W2"]))
 	print("b2 = " + str(parameters["b2"]))
-
+	'''
 
 	for i in range(0,num_iterations):
 
 		A2,cache=forward_propagation(X,parameters)
-		#print(A2.shape)
-		#print("A2 = "+str(A2))
 		cost =compute_cost(A2,Y,parameters)
 		grads=backward_propagation(parameters,cache,X,Y)
-		parameters=update_paramters(parameters,grads,0.001)
+		parameters=update_paramters(parameters,grads,0.1)
 		if print_cost and i%100==0:
 			print("Cost afetr iteration %i:%f" %(i,cost))
+			#print(A2.shape)
+			#print(A2)
+			#print(np.sum(A2,axis=0).shape)
+			#print(np.sum(A2, axis=0))
+
 
 
 	return parameters
 
-	'''
-	print("dW1 = "+str(grads["dW1"]))
-	print("db1 = "+str(grads["db1"]))
-	print("dW2 = "+str(grads["dW2"]))
-	print("db2 = "+str(grads["db2"]))
 
-	
-	print("W1 = " + str(parameters["W1"]))
-	print("b1 = " + str(parameters["b1"]))
-	print("W2 = " + str(parameters["W2"]))
-	print("b2 = " + str(parameters["b2"]))
-	'''
 
 
 
@@ -171,6 +164,7 @@ Y=Y.astype(np.int)
 
 Y=np.transpose(Y)
 
+#one hot encoding for multiclass
 one_hot_encoded=list()
 for value in range (0,Y.shape[1]):
 	out=list()
@@ -187,8 +181,11 @@ print(Y)
 print("shape of x ="+str(X.shape))
 print("shape of y ="+str(Y.shape))
 
-parameters = nn_model(X, Y, 4, num_iterations=1000, print_cost=True)
+#running the model for given number of iterations
+parameters = nn_model(X, Y, 4, num_iterations=2000, print_cost=True)
+'''
 print("W1 = " + str(parameters["W1"]))
 print("b1 = " + str(parameters["b1"]))
 print("W2 = " + str(parameters["W2"]))
 print("b2 = " + str(parameters["b2"]))	
+'''
