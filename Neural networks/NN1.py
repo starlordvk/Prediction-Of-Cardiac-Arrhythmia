@@ -19,7 +19,7 @@ def softmax(z):
 def layer_sizes(X,Y):
 	n_x	= X.shape[0]
 	n_y = Y.shape[0]
-	n_h = 4
+	n_h = 10
 	return (n_x,n_h,n_y)
 
 #initializing weights and biases for layer 1 and layer 2
@@ -135,7 +135,7 @@ def nn_model(X,Y,n_h,num_iterations=1000, print_cost=False):
 		A2,cache=forward_propagation(X,parameters)
 		cost =compute_cost(A2,Y,parameters)
 		grads=backward_propagation(parameters,cache,X,Y)
-		parameters=update_paramters(parameters,grads,0.1)
+		parameters=update_paramters(parameters,grads,0.01)
 		if print_cost and i%100==0:
 			print("Cost afetr iteration %i:%f" %(i,cost))
 			#print(A2.shape)
@@ -147,7 +147,12 @@ def nn_model(X,Y,n_h,num_iterations=1000, print_cost=False):
 
 	return parameters
 
-
+def predict(parameters, X):
+   	A2, cache = forward_propagation(X,parameters)
+   	print(np.transpose(A2))
+   	predictions=np.zeros(A2.shape[1])
+   	predictions=np.argmax(A2,axis=0)+1
+   	return predictions
 
 
 
@@ -182,10 +187,13 @@ print("shape of x ="+str(X.shape))
 print("shape of y ="+str(Y.shape))
 
 #running the model for given number of iterations
-parameters = nn_model(X, Y, 4, num_iterations=2000, print_cost=True)
+parameters = nn_model(X, Y, 4, num_iterations=10000, print_cost=True)
 '''
 print("W1 = " + str(parameters["W1"]))
 print("b1 = " + str(parameters["b1"]))
 print("W2 = " + str(parameters["W2"]))
 print("b2 = " + str(parameters["b2"]))	
 '''
+
+predictions=predict(parameters,X)
+print("predictions = "+str(predictions))
