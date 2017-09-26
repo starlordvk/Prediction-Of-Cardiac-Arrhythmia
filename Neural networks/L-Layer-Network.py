@@ -4,6 +4,10 @@ import math
 import operator
 import random
 
+def relu(Z):
+	return(np.maximum(Z,0),Z)
+
+
 def initialize_parameters_deep(layer_dims):
 	parameters={}
 	L=len(layer_dims)
@@ -16,8 +20,35 @@ def initialize_parameters_deep(layer_dims):
 
 	return parameters
 
-def linear_forward():
-	
+def linear_forward(A,W,b):
+	Z=np.dot(W,A)+b	
+	assert(Z.shape==(W.shape[0],A.shape[1]))
+	cache=(A,W,b)
+	return Z,cache
+
+def linear_actiavtion_forward(A_prev,W,b,activation):
+	if activation=="relu":
+		Z,linear_cache=linear_forward(A_prev,W,b)
+		A,activation_cache=relu(Z)
+	if activation=="softmax":
+
+	assert(A.shape==(W.shape[0],A_prev.shape[1]))
+	cache=(linear_cache,actiavtion_cache)
+
+	return A,cache
+
+def L_model_forward(X,parameters):
+	caches=[]
+	A=X
+	L=len(parameters)
+	for l in range(1,L):
+		A_prev=A
+		A,cache=linear_actiavtion_forward(A_prev,parameters["W"+str(l)],parameters["b"+str(l)],activation="relu")
+		caches.append(cache)
+	AL,cache=linear_actiavtion_forward(A,parameters["W"+str(L)],parameters["b"+str(L)],activation="softmax")
+			
+
+
 
 reader=csv.reader(open("reduced_features.csv","r"),delimiter=",")
 X=list(reader)
