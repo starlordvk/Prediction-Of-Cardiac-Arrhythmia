@@ -1,9 +1,16 @@
 import numpy as np
 import csv
-import math
-import operator
-import random
+
 from scipy.special import expit
+
+#accuracy funciton
+def accuracy(y,pred):
+	count=0.0
+	for i in range(0,y.shape[1]):
+		if(y[0][i]==pred[i]):
+			count=count+1
+	print (count)
+	return count*100/y.shape[1]
 
 #sigmoid function definition
 def sigmoid(z):
@@ -16,10 +23,10 @@ def softmax(z):
 	return s
 
 #initializing the layer sizes, assuming the hidden layer has 4 units
-def layer_sizes(X,Y):
+def layer_sizes(X,Y,n_h):
 	n_x	= X.shape[0]
 	n_y = Y.shape[0]
-	n_h = 6
+	n_h = n_h
 	return (n_x,n_h,n_y)
 
 #initializing weights and biases for layer 1 and layer 2
@@ -117,25 +124,20 @@ def update_paramters(parameters,grads,learning_rate):
 
 #model for NN
 def nn_model(X,Y,n_h,num_iterations=1000, print_cost=False):
-	n_x,n_h,n_y=layer_sizes(X,Y)
+	n_x,n_h,n_y=layer_sizes(X,Y,n_h)
 	print("size of imput layer is n_x ="+str(n_x))
 	print("size of hidden layer is n_xh ="+str(n_h))
 	print("size of output layer is n_y ="+str(n_y))
 
 	parameters= initialize_paramteres(n_x,n_h,n_y)
-	'''
-	print("W1 = " + str(parameters["W1"]))
-	print("b1 = " + str(parameters["b1"]))
-	print("W2 = " + str(parameters["W2"]))
-	print("b2 = " + str(parameters["b2"]))
-	'''
+
 
 	for i in range(0,num_iterations):
 
 		A2,cache=forward_propagation(X,parameters)
 		cost =compute_cost(A2,Y,parameters)
 		grads=backward_propagation(parameters,cache,X,Y)
-		parameters=update_paramters(parameters,grads,0.01)
+		parameters=update_paramters(parameters,grads,0.001)
 		if print_cost and i%100==0:
 			print("Cost afetr iteration %i:%f" %(i,cost))
 			#print(A2.shape)
@@ -160,8 +162,8 @@ reader=csv.reader(open("reduced_features.csv","r"),delimiter=",")
 X=list(reader)
 X=np.array(X)
 X=X.astype(np.float)
-X=np.transpose(X)
 
+#feature scaling
 from sklearn.preprocessing import StandardScaler
 sc=StandardScaler()
 X=sc.fit_transform(X)
@@ -171,33 +173,46 @@ Y=list(reader)
 Y=np.array(Y)
 Y=Y.astype(np.int)
 
-Y=np.transpose(Y)
+#splitting the dataset into training and testing sets
+from sklearn.cross_validation import train_test_split
+X_train, X_test, Y_train, Y_test= train_test_split(X,Y,test_size=0.1, random_state=0)
+
+
+Y_train=np.transpose(Y_train)
 
 #one hot encoding for multiclass
 one_hot_encoded=list()
-for value in range (0,Y.shape[1]):
+for value in range (0,Y_train.shape[1]):
 	out=list()
 	out=[0 for i in range(13)]
-	out[Y[0][value]-1]=1
+	out[Y_train[0][value]-1]=1
 	one_hot_encoded.append(out)
 
 
-Y=one_hot_encoded
-Y=np.array(Y)
-Y=np.transpose(Y)
-print(Y)
+Y_train=one_hot_encoded
+Y_train=np.array(Y_train)
 
-print("shape of x ="+str(X.shape))
-print("shape of y ="+str(Y.shape))
+
+X_train=np.transpose(X_train)
+Y_train=np.transpose(Y_train)
+
+X_test=np.transpose(X_test)
+Y_test=np.transpose(Y_test)
+
+
+print("shape of x ="+str(X_train.shape))
+print("shape of y ="+str(Y_train.shape))
+
+
 
 #running the model for given number of iterations
-parameters = nn_model(X, Y, 4, num_iterations=10000, print_cost=True)
-'''
-print("W1 = " + str(parameters["W1"]))
-print("b1 = " + str(parameters["b1"]))
-print("W2 = " + str(parameters["W2"]))
-print("b2 = " + str(parameters["b2"]))	
-'''
+parameters = nn_model(X_train, Y_train, 70, num_iterations=10000, print_cost=True)
 
-predictions=predict(parameters,X)
+#using the paramters values to predict future values i.e values of testing set
+predictions=predict(parameters,X_test)
+
+#predictions for testing set
 print("predictions = "+str(predictions))
+
+#Accuracy of classification for testing set
+print("Accuracy = "+str(accuracy(Y_test,predictions))+ " %")
