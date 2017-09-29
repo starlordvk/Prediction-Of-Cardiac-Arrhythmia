@@ -19,7 +19,7 @@ def softmax(z):
 def layer_sizes(X,Y):
 	n_x	= X.shape[0]
 	n_y = Y.shape[0]
-	n_h = 10
+	n_h = 6
 	return (n_x,n_h,n_y)
 
 #initializing weights and biases for layer 1 and layer 2
@@ -161,6 +161,10 @@ X=list(reader)
 X=np.array(X)
 X=X.astype(np.float)
 X=np.transpose(X)
+
+from sklearn.preprocessing import StandardScaler
+sc=StandardScaler()
+X=sc.fit_transform(X)
 
 reader=csv.reader(open("target_output.csv","r"),delimiter=",")
 Y=list(reader)
