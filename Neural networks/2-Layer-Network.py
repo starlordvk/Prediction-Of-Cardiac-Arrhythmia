@@ -1,7 +1,6 @@
 import numpy as np
 import csv
 
-from scipy.special import expit
 
 #accuracy funciton
 def accuracy(y,pred):
@@ -58,6 +57,7 @@ def forward_propagation	(X,parameters):
 	A1=np.tanh(Z1)
 	Z2=np.dot(W2,A1)+b2
 	A2=softmax(Z2)
+
 
 	assert(A2.shape==(13,X.shape[1]))
 
